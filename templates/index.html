@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="/static/css/materialize.min.css"  media="screen,projection"/>
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <form class="col s9 offset-s3" action="/" method="post" autocomplete="off">
+                <div class="input-field col s7">
+                    <input list="players" name="player_name" id="player_name" required="required">
+                    <datalist id="players">
+                        {% for name in player_list %}
+                            <option value = "{{ name }}">{{ name }}</option>
+                        {% endfor %}
+                    </datalist>
+                </div>
+                <div class="input-field col s2">
+                    <button class="btn waves-effect waves-light blue-grey" type="submit" name="action">
+                        <i class="material-icons">search</i>
+                    </button>
+                </div>
+            </form>
+            {% if show_stats%}
+                <div class="col s12 valign center">
+                    <h3>{{ name }}</h3>
+                </div>
+                <div class="col s2">
+                    <img src="{{ imageurl }}" class="circle responsive-img">
+                </div>
+                <div class="col s2">
+                    <div class="card blue-grey lighten-2">
+                        <div class="card-content white-text">
+                            Position: {{ position }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col s2">
+                    <div class="card blue-grey lighten-2">
+                        <div class="card-content white-text">
+                            Position: {{ position }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col s2">
+                    <div class="card blue-grey lighten-2">
+                        <div class="card-content white-text">
+                            Position: {{ position }}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+    <script type="text/javascript" src="/static/js/materialize.min.js"></script>
+</body>
+{#    <div class="content">#}
+{#        <form action="/" method="post" autocomplete="off">#}
+{#            <input list="players" name="player_name" id="player_name">#}
+{#            <datalist id="players">#}
+{#            {% for name in player_list %}#}
+{#                <option value = "{{ name }}">{{ name }}</option>#}
+{#            {% endfor %}#}
+{#            </datalist>#}
+{#            <input type="submit" value="submit">#}
+{#        </form>#}
+{#        {% if show_stats%}#}
+{#            <h2>{{ name }}</h2>#}
+{#            <div class ="portrait">#}
+{#                <img src="{{ imageurl }}">#}
+{#            </div>#}
+{#            <p> <b>Position: </b>{{ position }}</p>#}
+{#            <div class="row">#}
+{#                <div class="column">#}
+{#                    <h3>Per Game Stats:</h3>#}
+{#                    <p><b>Points: </b>{{ points }}</p>#}
+{#                    <p><b>Rebounds: </b>{{ rebounds }}</p>#}
+{#                    <p><b>Assists: </b>{{ assists }}</p>#}
+{#                </div>#}
+{#                <div class="column">#}
+{#                    <h3>Shooting Percentages:</h3>#}
+{#                    <p><b>FG%: </b>{{ fg_pct }}%</p>#}
+{#                    <p><b>3PT%: </b>{{ fg3_pct }}%</p>#}
+{#                    <p><b>FT%: </b>{{ ft_pct }}%</p>#}
+{#                    <p><b>True Shooting%: </b>{{ ts }}%</p>#}
+{#                </div>#}
+{#            </div>#}
+{#            <h3>Highlights:</h3>#}
+{#            <iframe id="ytplayer" type="text/html" width="480" height="360"#}
+{#  src="https://www.youtube.com/embed/{{ yt_vid_id }}?autoplay=1&mute=1"#}
+{#  frameborder="0"></iframe>#}
+{#        {% endif %}#}
+{#        {{ error_message }}#}
+{#    </div>#}
+
+</html>
