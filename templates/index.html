@@ -2,16 +2,27 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>
+        {% if show_stats %}
+            NBACard - {{ name }}
+        {% else %}
+            NBACard
+        {% endif %}
+    </title>
     <!--Import Google Icon Font-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!--Import materialize.css-->
-    <link type="text/css" rel="stylesheet" href="/static/css/materialize.min.css"  media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="/static/css/materialize.css"  media="screen,projection"/>
     <!--Let browser know website is optimized for mobile-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </head>
 <body>
     <div class="container">
+{#        {% if not show_stats %}#}
+{#            <div class="col s12 valign center">#}
+{#                test#}
+{#            </div>#}
+{#        {% endif %}#}
         <div class="row">
             <form class="col s9 offset-s3" action="/" method="post" autocomplete="off">
                 <div class="input-field col s7">
@@ -35,34 +46,56 @@
                 <div class="col s2">
                     <img src="{{ imageurl }}" class="circle responsive-img">
                 </div>
-                <div class="col s2">
-                    <div class="card blue-grey lighten-2">
-                        <div class="card-content white-text">
-                            <h5>Info</h5>
-                            Position: {{ position }}
+                    <div class="col s10">
+                        <div class="card">
+                            <div class="card-tabs">
+                                <ul class="tabs tabs-fixed-width">
+                                    <li class="tab"><a href="#tab1">Info</a></li>
+                                    <li class="tab"><a href="#tab2">Per Game Stats</a></li>
+                                    <li class="tab"><a href="#tab3">Shooting %s</a></li>
+                                </ul>
+                            </div>
+                            <div class="card-content grey lighten-4">
+                                <div id="tab1">
+                                    <p><b>Position: </b>{{ position }}</p>
+                                </div>
+                                <div id="tab2">test2</div>
+                                <div id="tab3">test3</div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col s2">
-                    <div class="card blue-grey lighten-2">
-                        <div class="card-content white-text">
-                            <h5>Stats</h5>
-                            Position: {{ position }}
-                        </div>
-                    </div>
-                </div>
-                <div class="col s2">
-                    <div class="card blue-grey lighten-2">
-                        <div class="card-content white-text">
-                            Position: {{ position }}
-                        </div>
-                    </div>
-                </div>
+{#                <div class="col s2">#}
+{#                    <div class="card blue-grey lighten-2">#}
+{#                        <div class="card-content white-text">#}
+{#                            <h5>Info</h5>#}
+{#                            Position: {{ position }}#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#                <div class="col s2">#}
+{#                    <div class="card blue-grey lighten-2">#}
+{#                        <div class="card-content white-text">#}
+{#                            <h5>Stats</h5>#}
+{#                            Position: {{ position }}#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#                <div class="col s2">#}
+{#                    <div class="card blue-grey lighten-2">#}
+{#                        <div class="card-content white-text">#}
+{#                            Position: {{ position }}#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
                 <div class="col s12 valign center">
-                    <h3>Highlights:</h3>#}
-                        <iframe id="ytplayer" type="text/html" width="480" height="360"
-              src="https://www.youtube.com/embed/{{ yt_vid_id }}?autoplay=1&mute=1"
-              frameborder="0"></iframe>
+                    <h3>Highlights:</h3>
+                        {% if not yt_vid_id %}
+                            Highlight video not available right now, please try again later!
+                        {% else %}
+                            <iframe id="ytplayer" type="text/html" width="480" height="360"
+                            src="https://www.youtube.com/embed/{{ yt_vid_id }}?autoplay=1&mute=1"
+                            frameborder="0"></iframe>
+                        {% endif %}
                 </div>
             {% endif %}
         </div>
@@ -74,8 +107,14 @@
 
 
 
-
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('.tabs').tabs();
+        });
+    </script>
     <script type="text/javascript" src="/static/js/materialize.min.js"></script>
+
 </body>
 {#    <div class="content">#}
 {#        <form action="/" method="post" autocomplete="off">#}

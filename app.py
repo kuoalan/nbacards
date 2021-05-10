@@ -54,7 +54,10 @@ def submit():
             imageurl = 'https://www.basketball-reference.com/req/202105076/images/players/' + bbref_id + ".jpg"
             yt_query = requests.get(f'https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&q={full_name} highlights&type=video&key={yt_api_key}')
             yt_result = yt_query.json()
-            yt_vid_id = yt_result['items'][0]['id']['videoId']
+            if "error" in yt_result:
+                yt_vid_id = False
+            else:
+                yt_vid_id = yt_result['items'][0]['id']['videoId']
             return render_template('index.html', name=full_name, position=position, points=ppg, rebounds=rebounds,
                                    assists=assists, fg_pct = fg_pct, fg3_pct = fg3_pct, ft_pct = ft_pct, ts = ts,
                                    show_stats=True, imageurl = imageurl, player_list = player_name_id, yt_vid_id = yt_vid_id)
