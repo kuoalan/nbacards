@@ -39,6 +39,10 @@ def submit():
             if len(player_stats['data']) == 0:
                 continue
             position = player_info['position']
+            height_feet = player_info['height_feet']
+            height_inches = player_info['height_inches']
+            weight = player_info['weight_pounds']
+            team = player_info['team']['full_name']
             ppg = player_stats['data'][0]['pts']
             rebounds = player_stats['data'][0]['reb']
             assists = player_stats['data'][0]['ast']
@@ -60,6 +64,7 @@ def submit():
                 yt_vid_id = yt_result['items'][0]['id']['videoId']
             return render_template('index.html', name=full_name, position=position, points=ppg, rebounds=rebounds,
                                    assists=assists, fg_pct = fg_pct, fg3_pct = fg3_pct, ft_pct = ft_pct, ts = ts,
+                                   height_feet = height_feet, height_inches = height_inches,weight = weight, team = team,
                                    show_stats=True, imageurl = imageurl, player_list = player_name_id, yt_vid_id = yt_vid_id)
     else:
         error_message = "Data not found!"
