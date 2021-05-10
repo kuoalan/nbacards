@@ -1,25 +1,16 @@
-
-
-# app = Flask(__name__)
-
-
 import os
 import requests
 from flask import Flask, render_template, json, request, redirect, url_for
 
-yt_api_key = 'AIzaSyDq5-cCacJJohEAKg6BKy9H7kUR8YqldD0'
+
 
 app = Flask(__name__)
 
-# filename = os.path.join(app.static_folder, 'player_ids.json')
 data_file = os.path.join(app.static_folder, 'data.json')
 name_id_file = os.path.join(app.static_folder, 'player_dict.json')
 
-# with open(filename) as test_file:
-#     player_list = json.load(test_file)
-#     print(player_list)
-#
-#
+yt_api_key = 'AIzaSyDq5-cCacJJohEAKg6BKy9H7kUR8YqldD0'
+
 with open(data_file) as f:
     player_data = json.load(f)
 
@@ -29,8 +20,9 @@ with open(name_id_file) as f:
 
 
 @app.route('/')
-def hello_world():
+def index():
     return render_template('index.html', show_stats = False, player_list = player_name_id)
+
 
 @app.route('/', methods=['POST'])
 def submit():

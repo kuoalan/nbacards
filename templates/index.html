@@ -38,6 +38,15 @@
                 <div class="col s2">
                     <div class="card blue-grey lighten-2">
                         <div class="card-content white-text">
+                            <h5>Info</h5>
+                            Position: {{ position }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col s2">
+                    <div class="card blue-grey lighten-2">
+                        <div class="card-content white-text">
+                            <h5>Stats</h5>
                             Position: {{ position }}
                         </div>
                     </div>
@@ -49,12 +58,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="col s2">
-                    <div class="card blue-grey lighten-2">
-                        <div class="card-content white-text">
-                            Position: {{ position }}
-                        </div>
-                    </div>
+                <div class="col s12 valign center">
+                    <h3>Highlights:</h3>#}
+                        <iframe id="ytplayer" type="text/html" width="480" height="360"
+              src="https://www.youtube.com/embed/{{ yt_vid_id }}?autoplay=1&mute=1"
+              frameborder="0"></iframe>
                 </div>
             {% endif %}
         </div>
