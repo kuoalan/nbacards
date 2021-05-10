@@ -24,8 +24,8 @@
 {#            </div>#}
 {#        {% endif %}#}
         <div class="row">
-            <form class="col s9 offset-s3" action="/" method="post" autocomplete="off">
-                <div class="input-field col s7">
+            <form class="col s8 offset-s4" action="/" method="post" autocomplete="off">
+                <div class="input-field col s6">
                     <input list="players" name="player_name" id="player_name" required="required">
                     <datalist id="players">
                         {% for name in player_list %}
@@ -34,14 +34,14 @@
                     </datalist>
                 </div>
                 <div class="input-field col s2">
-                    <button class="btn waves-effect waves-light blue-grey" type="submit" name="action">
+                    <button class="btn waves-effect waves-light blue darken-3" type="submit" name="action">
                         <i class="material-icons">search</i>
                     </button>
                 </div>
             </form>
             {% if show_stats%}
                 <div class="col s12 valign center">
-                    <h3>{{ name }}</h3>
+                    <h2>{{ name }}</h2>
                 </div>
                 <div class="col s2">
                     <img src="{{ imageurl }}" class="circle responsive-img">
@@ -96,6 +96,10 @@
                             src="https://www.youtube.com/embed/{{ yt_vid_id }}?autoplay=1&mute=1"
                             frameborder="0"></iframe>
                         {% endif %}
+                </div>
+            {% else %}
+                <div class="col s12 valign center">
+                    Search for any current NBA player!
                 </div>
             {% endif %}
         </div>
