@@ -19,8 +19,8 @@
 <body>
     <div class="container">
         <div class="row">
-            <form class="col s8 offset-s4" action="/" method="post" autocomplete="off">
-                <div class="input-field col s6">
+            <form class="col s9 offset-s3" action="/" method="post" autocomplete="off">
+                <div class="input-field col s7">
                     <input list="players" name="player_name" id="player_name" required="required">
                     <datalist id="players">
                         {% for name in player_list %}
@@ -38,7 +38,7 @@
                 <div class="col s12 valign center">
                     <h2>{{ name }}</h2>
                 </div>
-                <div class="col s2 offset-s2">
+                <div class="col s2 offset-s1">
                     <img src="{{ imageurl }}" class="circle responsive-img">
                 </div>
                     <div class="col s6">
@@ -46,8 +46,8 @@
                             <div class="card-tabs">
                                 <ul class="tabs tabs-fixed-width">
                                     <li class="tab"><a href="#tab1">Info</a></li>
-                                    <li class="tab"><a href="#tab2">Per Game Stats</a></li>
-                                    <li class="tab"><a href="#tab3">Shooting %s</a></li>
+                                    <li class="tab"><a href="#tab2">Stats</a></li>
+                                    <li class="tab"><a href="#tab3">%s</a></li>
                                 </ul>
                             </div>
                             <div class="card-content grey lighten-4">
@@ -57,8 +57,20 @@
                                     <p><b>Height: </b> {% if height_feet %}{{ height_feet }} feet {{ height_inches }} inches{% else %} Not available {% endif %}</p>
                                     <p><b>Weight: </b> {% if weight %}{{ weight }} pounds{% else %} Not available {% endif %}</p>
                                 </div>
-                                <div id="tab2">test2</div>
-                                <div id="tab3">test3</div>
+                                <div id="tab2">
+                                    <p><b>Points: </b>{{ points }}</p>
+                                    <p><b>Rebounds: </b>{{ rebounds }}</p>
+                                    <p><b>Assists: </b>{{ assists }}</p>
+                                    <p><b>Steals: </b>{{ steals }}</p>
+                                    <p><b>Blocks: </b>{{ blocks }}</p>
+                                    <p><b>Turnovers: </b>{{ turnovers }}</p>
+                                </div>
+                                <div id="tab3">
+                                    <p><b>FG: </b>{{ fg_pct }}%</p>
+                                    <p><b>3PT: </b>{{ fg3_pct }}%</p>
+                                    <p><b>FT: </b>{{ ft_pct }}%</p>
+                                    <p><b>TS: </b>{{ ts }}%</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -86,7 +98,7 @@
 {#                    </div>#}
 {#                </div>#}
                 <div class="col s12 valign center">
-                    <h3>Highlights:</h3>
+                    <h4>Highlights</h4>
                         {% if not yt_vid_id %}
                             Highlight video not available right now, please try again later!
                         {% else %}
@@ -97,8 +109,8 @@
                 </div>
             {% else %}
                 <div class="col s12 valign center">
-                    <h4>NBACard</h4>
-                    Search for any current NBA player and get their stat card and highlights!
+                    <h5>Search for any current NBA player to see their stat card and highlights!</h5>
+                    <span class="grey-text text-lighten-1">Built with Flask. Data obtained from <a href="https://www.balldontlie.io" target="_blank">balldontlie</a> API and <a href="https://www.basketball-reference.com/" target="_blank">basketball-reference</a>.</span>
                 </div>
             {% endif %}
         </div>

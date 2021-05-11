@@ -38,22 +38,28 @@ def submit():
             player_info = player_info_req.json()
             if len(player_stats['data']) == 0:
                 continue
+            # extract player info from response
             position = player_info['position']
             height_feet = player_info['height_feet']
             height_inches = player_info['height_inches']
             weight = player_info['weight_pounds']
             team = player_info['team']['full_name']
-            ppg = player_stats['data'][0]['pts']
-            rebounds = player_stats['data'][0]['reb']
-            assists = player_stats['data'][0]['ast']
-            fga = player_stats['data'][0]['fga']
-            fta = player_stats['data'][0]['fta']
-            fg_pct = round(player_stats['data'][0]['fg_pct']*100, 2)
-            fg3_pct = round(player_stats['data'][0]['fg3_pct']*100, 2)
-            ft_pct = round(player_stats['data'][0]['ft_pct']*100, 2)
+            # extract stats from response
+            stat_source = player_stats['data'][0]
+            ppg = stat_source['pts']
+            rebounds = stat_source['reb']
+            assists = stat_source['ast']
+            steals = stat_source['stl']
+            blocks = stat_source['blk']
+            turnovers = stat_source['turnover']
+            fga = stat_source['fga']
+            fta = stat_source['fta']
+            fg_pct = round(stat_source['fg_pct']*100, 2)
+            fg3_pct = round(stat_source['fg3_pct']*100, 2)
+            ft_pct = round(stat_source['ft_pct']*100, 2)
             ts = round((ppg/(2*(fga+0.44*fta)))*100,2)
             print(ts)
-
+            # Get image from bbref
             bbref_id = player_name_id[full_name]
             imageurl = 'https://www.basketball-reference.com/req/202105076/images/players/' + bbref_id + ".jpg"
             yt_query = requests.get(f'https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&q={full_name} highlights&type=video&key={yt_api_key}')
@@ -63,7 +69,8 @@ def submit():
             else:
                 yt_vid_id = yt_result['items'][0]['id']['videoId']
             return render_template('index.html', name=full_name, position=position, points=ppg, rebounds=rebounds,
-                                   assists=assists, fg_pct = fg_pct, fg3_pct = fg3_pct, ft_pct = ft_pct, ts = ts,
+                                   assists=assists, steals = steals, blocks = blocks, turnovers = turnovers,
+                                   fg_pct = fg_pct, fg3_pct = fg3_pct, ft_pct = ft_pct, ts = ts,
                                    height_feet = height_feet, height_inches = height_inches,weight = weight, team = team,
                                    show_stats=True, imageurl = imageurl, player_list = player_name_id, yt_vid_id = yt_vid_id)
     else:
