@@ -78,7 +78,7 @@ def submit():
             bbref_id = player_ids[player][0]
             imageurl = 'https://www.basketball-reference.com/req/202105076/images/players/' + bbref_id + ".jpg"
             yt_query = requests.get(
-                f'https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&q={player} nba highlights&type=video&key={yt_api_key}')
+                f'https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&q={player} 2020 nba highlights&type=video&key={yt_api_key}')
             yt_result = yt_query.json()
             if "error" in yt_result:
                 yt_vid_id = False
