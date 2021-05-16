@@ -37,6 +37,7 @@
             {% if show_stats%}
                 <div class="col s12 valign center">
                     <h2>{{ name }}</h2>
+                    <p class="grey-text text-lighten-1">{{ position }} | {{ team }} | {% if height_feet %}{{ height_feet }}-{{ height_inches }}{% else %} Height not available {% endif %} | {% if weight %}{{ weight }} lbs{% else %} Weight not available {% endif %}</p>
                 </div>
                 <div class="col s2 offset-s1">
                     <img src="{{ imageurl }}" class="circle responsive-img">
@@ -45,27 +46,20 @@
                         <div class="card">
                             <div class="card-tabs">
                                 <ul class="tabs tabs-fixed-width">
-                                    <li class="tab"><a href="#tab1">Info</a></li>
-                                    <li class="tab"><a href="#tab2">Stats</a></li>
-                                    <li class="tab"><a href="#tab3">%s</a></li>
+                                    <li class="tab"><a href="#tab1">Stats</a></li>
+                                    <li class="tab"><a href="#tab2">Percentages</a></li>
                                 </ul>
                             </div>
                             <div class="card-content grey lighten-4">
                                 <div id="tab1">
-                                    <p><b>Team: </b> {{ team }}</p>
-                                    <p><b>Position: </b>{{ position }}</p>
-                                    <p><b>Height: </b> {% if height_feet %}{{ height_feet }} feet {{ height_inches }} inches{% else %} Not available {% endif %}</p>
-                                    <p><b>Weight: </b> {% if weight %}{{ weight }} pounds{% else %} Not available {% endif %}</p>
+                                    <p><b>PTS: </b>{{ points }}</p>
+                                    <p><b>RBS: </b>{{ rebounds }}</p>
+                                    <p><b>AST: </b>{{ assists }}</p>
+                                    <p><b>STL: </b>{{ steals }}</p>
+                                    <p><b>BLK: </b>{{ blocks }}</p>
+                                    <p><b>TOV: </b>{{ turnovers }}</p>
                                 </div>
                                 <div id="tab2">
-                                    <p><b>Points: </b>{{ points }}</p>
-                                    <p><b>Rebounds: </b>{{ rebounds }}</p>
-                                    <p><b>Assists: </b>{{ assists }}</p>
-                                    <p><b>Steals: </b>{{ steals }}</p>
-                                    <p><b>Blocks: </b>{{ blocks }}</p>
-                                    <p><b>Turnovers: </b>{{ turnovers }}</p>
-                                </div>
-                                <div id="tab3">
                                     <p><b>FG: </b>{{ fg_pct }}%</p>
                                     <p><b>3PT: </b>{{ fg3_pct }}%</p>
                                     <p><b>FT: </b>{{ ft_pct }}%</p>
@@ -74,29 +68,6 @@
                             </div>
                         </div>
                     </div>
-{#                <div class="col s2">#}
-{#                    <div class="card blue-grey lighten-2">#}
-{#                        <div class="card-content white-text">#}
-{#                            <h5>Info</h5>#}
-{#                            Position: {{ position }}#}
-{#                        </div>#}
-{#                    </div>#}
-{#                </div>#}
-{#                <div class="col s2">#}
-{#                    <div class="card blue-grey lighten-2">#}
-{#                        <div class="card-content white-text">#}
-{#                            <h5>Stats</h5>#}
-{#                            Position: {{ position }}#}
-{#                        </div>#}
-{#                    </div>#}
-{#                </div>#}
-{#                <div class="col s2">#}
-{#                    <div class="card blue-grey lighten-2">#}
-{#                        <div class="card-content white-text">#}
-{#                            Position: {{ position }}#}
-{#                        </div>#}
-{#                    </div>#}
-{#                </div>#}
                 <div class="col s12 valign center">
                     <h4>Highlights</h4>
                         {% if not yt_vid_id %}
@@ -110,18 +81,13 @@
             {% else %}
                 <div class="col s12 valign center">
                     <h5>Search for any current NBA player to see their stat card and highlights!</h5>
-                    <span class="grey-text text-lighten-1">Built with Flask. Data obtained from <a href="https://www.balldontlie.io" target="_blank">balldontlie</a> API and <a href="https://www.basketball-reference.com/" target="_blank">basketball-reference</a>.</span>
                 </div>
             {% endif %}
+            <div class="col s12 valign center">
+                <span class="grey-text text-lighten-1">Built with Flask and the <a href="https://materializecss.com/" target="_blank">Materialize</a> framework. Data obtained from <a href="https://www.balldontlie.io" target="_blank">balldontlie</a> API and <a href="https://www.basketball-reference.com/" target="_blank">basketball-reference</a>.</span>
+            </div>
         </div>
     </div>
-
-
-
-
-
-
-
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
         $(document).ready(function(){
@@ -129,45 +95,5 @@
         });
     </script>
     <script type="text/javascript" src="/static/js/materialize.min.js"></script>
-
 </body>
-{#    <div class="content">#}
-{#        <form action="/" method="post" autocomplete="off">#}
-{#            <input list="players" name="player_name" id="player_name">#}
-{#            <datalist id="players">#}
-{#            {% for name in player_list %}#}
-{#                <option value = "{{ name }}">{{ name }}</option>#}
-{#            {% endfor %}#}
-{#            </datalist>#}
-{#            <input type="submit" value="submit">#}
-{#        </form>#}
-{#        {% if show_stats%}#}
-{#            <h2>{{ name }}</h2>#}
-{#            <div class ="portrait">#}
-{#                <img src="{{ imageurl }}">#}
-{#            </div>#}
-{#            <p> <b>Position: </b>{{ position }}</p>#}
-{#            <div class="row">#}
-{#                <div class="column">#}
-{#                    <h3>Per Game Stats:</h3>#}
-{#                    <p><b>Points: </b>{{ points }}</p>#}
-{#                    <p><b>Rebounds: </b>{{ rebounds }}</p>#}
-{#                    <p><b>Assists: </b>{{ assists }}</p>#}
-{#                </div>#}
-{#                <div class="column">#}
-{#                    <h3>Shooting Percentages:</h3>#}
-{#                    <p><b>FG%: </b>{{ fg_pct }}%</p>#}
-{#                    <p><b>3PT%: </b>{{ fg3_pct }}%</p>#}
-{#                    <p><b>FT%: </b>{{ ft_pct }}%</p>#}
-{#                    <p><b>True Shooting%: </b>{{ ts }}%</p>#}
-{#                </div>#}
-{#            </div>#}
-{#            <h3>Highlights:</h3>#}
-{#            <iframe id="ytplayer" type="text/html" width="480" height="360"#}
-{#  src="https://www.youtube.com/embed/{{ yt_vid_id }}?autoplay=1&mute=1"#}
-{#  frameborder="0"></iframe>#}
-{#        {% endif %}#}
-{#        {{ error_message }}#}
-{#    </div>#}
-
 </html>

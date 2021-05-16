@@ -1,7 +1,6 @@
 import os
 import requests
-from flask import Flask, render_template, json, request, redirect, url_for
-
+from flask import Flask, render_template, json, request
 
 
 app = Flask(__name__)
@@ -9,14 +8,15 @@ app = Flask(__name__)
 data_file = os.path.join(app.static_folder, 'data.json')
 name_id_file = os.path.join(app.static_folder, 'player_dict.json')
 
-yt_api_key = 'AIzaSyDq5-cCacJJohEAKg6BKy9H7kUR8YqldD0'
+yt_api_key = os.environ.get('yt_secret_key', None)
+
+port = int(os.environ.get("PORT", 5000))
 
 with open(data_file) as f:
     player_data = json.load(f)
 
 with open(name_id_file) as f:
     player_name_id = json.load(f)
-
 
 
 @app.route('/')
@@ -38,13 +38,23 @@ def submit():
             player_info = player_info_req.json()
             if len(player_stats['data']) == 0:
                 continue
-            # extract player info from response
-            position = player_info['position']
+            # Extract player information from response
+            position_short = player_info['position']
+            position_array = position_short.split('-')
+            # Replace abbreviation with full position names
+            for ind, item in enumerate(position_array):
+                if item == 'C':
+                    position_array[ind] = 'Center'
+                elif item == 'F':
+                    position_array[ind] = 'Forward'
+                elif item == 'G':
+                    position_array[ind] = 'Guard'
+            position = '-'.join(position_array)
             height_feet = player_info['height_feet']
             height_inches = player_info['height_inches']
             weight = player_info['weight_pounds']
             team = player_info['team']['full_name']
-            # extract stats from response
+            # Extract counting stats from response
             stat_source = player_stats['data'][0]
             ppg = stat_source['pts']
             rebounds = stat_source['reb']
@@ -54,12 +64,12 @@ def submit():
             turnovers = stat_source['turnover']
             fga = stat_source['fga']
             fta = stat_source['fta']
+            # Calculate true shooting percentage
             fg_pct = round(stat_source['fg_pct']*100, 2)
             fg3_pct = round(stat_source['fg3_pct']*100, 2)
             ft_pct = round(stat_source['ft_pct']*100, 2)
             ts = round((ppg/(2*(fga+0.44*fta)))*100,2)
-            print(ts)
-            # Get image from bbref
+            # Get image from basketball reference
             bbref_id = player_name_id[full_name]
             imageurl = 'https://www.basketball-reference.com/req/202105076/images/players/' + bbref_id + ".jpg"
             yt_query = requests.get(f'https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&q={full_name} highlights&type=video&key={yt_api_key}')
@@ -77,7 +87,6 @@ def submit():
         error_message = "Data not found!"
         return render_template('index.html', error_message = error_message, player_list = player_name_id)
 
-    # return redirect(url_for('/', name = full_name, position = position, points = ppg, rebounds = rebounds, assists = assists, show_stats = True, **request.args))
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', port=port, debug=True)
