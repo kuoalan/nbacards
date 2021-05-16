@@ -39,15 +39,15 @@
                     <h2>{{ name }}</h2>
                     <p class="grey-text text-lighten-1">{{ position }} | {{ team }} | {% if height_feet %}{{ height_feet }}-{{ height_inches }}{% else %} Height not available {% endif %} | {% if weight %}{{ weight }} lbs{% else %} Weight not available {% endif %}</p>
                 </div>
-                <div class="col s2 offset-s1">
+                <div class="col s12 valign center">
                     <img src="{{ imageurl }}" class="circle responsive-img">
                 </div>
-                    <div class="col s6">
+                    <div class="col s6 offset-s3">
                         <div class="card">
                             <div class="card-tabs">
                                 <ul class="tabs tabs-fixed-width">
                                     <li class="tab"><a href="#tab1">Stats</a></li>
-                                    <li class="tab"><a href="#tab2">Percentages</a></li>
+                                    <li class="tab"><a href="#tab2">%</a></li>
                                 </ul>
                             </div>
                             <div class="card-content grey lighten-4">
@@ -73,9 +73,11 @@
                         {% if not yt_vid_id %}
                             Highlight video not available right now, please try again later!
                         {% else %}
-                            <iframe id="ytplayer" type="text/html" width="480" height="360"
-                            src="https://www.youtube.com/embed/{{ yt_vid_id }}?autoplay=1&mute=1"
-                            frameborder="0"></iframe>
+                            <div class="video-container">
+                                <iframe id="ytplayer" type="text/html" width="480" height="360"
+                                src="https://www.youtube.com/embed/{{ yt_vid_id }}?autoplay=1&mute=1"
+                                frameborder="0"></iframe>
+                            </div>
                         {% endif %}
                 </div>
             {% else %}
