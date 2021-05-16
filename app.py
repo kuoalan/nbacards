@@ -1,13 +1,16 @@
 import os
 import requests
-from flask import Flask, render_template, json, request
+from flask import Flask, render_template, json, request, session
 
 
 app = Flask(__name__)
 
 player_id_file = os.path.join(app.static_folder, 'player_ids.json')
+sessions_key = os.environ.get('sessions_key', None)
 yt_api_key = os.environ.get('yt_secret_key', None)
 port = int(os.environ.get("PORT", 5000))
+
+app.secret_key = sessions_key
 
 with open(player_id_file) as f:
     player_ids = json.load(f)
@@ -17,17 +20,35 @@ for player in player_ids:
     player_names.append(player)
 player_names.sort()
 
+
 def get_max_stats():
-    pass
+    ids_list = []
+    for each_player in player_ids:
+        ids_list.append(player_ids[each_player][1])
+    ids_list_str = ','.join(str(i) for i in ids_list)
+    max_stats_req = requests.get(f'https://www.balldontlie.io/api/v1/season_averages?player_ids[]={ids_list_str}')
+    max_stats_data = max_stats_req.json()
+    stat_cats = ['pts','reb','ast','stl','blk','turnover']
+    max_stats = {key: None for key in stat_cats}
+    for key in max_stats:
+        cur_max = max_stats_data['data'][0][key]
+        for i in range(1,len(max_stats_data['data'])):
+            if max_stats_data['data'][i][key] > cur_max:
+                cur_max = max_stats_data['data'][i][key]
+        max_stats[key] = cur_max
+    return max_stats
+
 
 @app.route('/')
 def index():
+    session['max_stats'] = get_max_stats()
     return render_template('index.html', show_stats = False, player_list = player_names)
 
 
 @app.route('/', methods=['POST'])
 def submit():
     search_target = request.form['player_name']
+    max_stats_dict = session['max_stats']
     for player in player_ids:
         if search_target.lower() in player.lower():
             bdl_id = player_ids[player][1]
@@ -57,6 +78,7 @@ def submit():
             # Extract counting stats from response
             stat_source = player_stats['data'][0]
             ppg = stat_source['pts']
+            ppg = ppg/max_stats_dict["pts"]
             rebounds = stat_source['reb']
             assists = stat_source['ast']
             steals = stat_source['stl']
