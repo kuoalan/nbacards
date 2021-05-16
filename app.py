@@ -83,7 +83,7 @@ def submit():
                                    assists=assists, steals = steals, blocks = blocks, turnovers = turnovers,
                                    fg_pct = fg_pct, fg3_pct = fg3_pct, ft_pct = ft_pct, ts = ts,
                                    height_feet = height_feet, height_inches = height_inches,weight = weight, team = team,
-                                   show_stats=True, imageurl = imageurl, player_list = player_ids, yt_vid_id = yt_vid_id)
+                                   show_stats=True, imageurl = imageurl, player_list = player_names, yt_vid_id = yt_vid_id)
     else:
         error_message = "Data not found!"
         return render_template('index.html', error_message = error_message, player_list = player_names)
