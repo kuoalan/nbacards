@@ -5,19 +5,9 @@ from flask import Flask, render_template, json, request
 
 app = Flask(__name__)
 
-data_file = os.path.join(app.static_folder, 'data.json')
-name_id_file = os.path.join(app.static_folder, 'player_dict.json')
 player_id_file = os.path.join(app.static_folder, 'player_ids.json')
-
 yt_api_key = os.environ.get('yt_secret_key', None)
-
 port = int(os.environ.get("PORT", 5000))
-
-with open(data_file) as f:
-    player_data = json.load(f)
-
-with open(name_id_file) as f:
-    player_name_id = json.load(f)
 
 with open(player_id_file) as f:
     player_ids = json.load(f)
