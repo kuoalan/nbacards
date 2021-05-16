@@ -12,12 +12,17 @@ port = int(os.environ.get("PORT", 5000))
 with open(player_id_file) as f:
     player_ids = json.load(f)
 
+player_names = []
+for player in player_ids:
+    player_names.append(player)
+player_names.sort()
+
 def get_max_stats():
     pass
 
 @app.route('/')
 def index():
-    return render_template('index.html', show_stats = False, player_list = player_name_id)
+    return render_template('index.html', show_stats = False, player_list = player_names)
 
 
 @app.route('/', methods=['POST'])
@@ -78,10 +83,10 @@ def submit():
                                    assists=assists, steals = steals, blocks = blocks, turnovers = turnovers,
                                    fg_pct = fg_pct, fg3_pct = fg3_pct, ft_pct = ft_pct, ts = ts,
                                    height_feet = height_feet, height_inches = height_inches,weight = weight, team = team,
-                                   show_stats=True, imageurl = imageurl, player_list = player_name_id, yt_vid_id = yt_vid_id)
+                                   show_stats=True, imageurl = imageurl, player_list = player_ids, yt_vid_id = yt_vid_id)
     else:
         error_message = "Data not found!"
-        return render_template('index.html', error_message = error_message, player_list = player_name_id)
+        return render_template('index.html', error_message = error_message, player_list = player_names)
 
 
 if __name__ == '__main__':

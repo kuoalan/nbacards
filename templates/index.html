@@ -80,6 +80,10 @@
                             </div>
                         {% endif %}
                 </div>
+            {% elif error_message %}
+                <div class="col s12 valign center">
+                    <p>{{ error_message }}</p>
+                </div>
             {% else %}
                 <div class="col s12 valign center">
                     <h5>Search for any current NBA player to see their stat card and highlights!</h5>
