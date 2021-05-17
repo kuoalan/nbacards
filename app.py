@@ -1,6 +1,7 @@
 import os
 import requests
 from flask import Flask, render_template, json, request, session
+import plotly.graph_objs as graph_obj
 
 
 app = Flask(__name__)
@@ -20,6 +21,7 @@ for player in player_ids:
     player_names.append(player)
 player_names.sort()
 
+stat_cats = ['pts','reb','ast','stl','blk','turnover']
 
 def get_max_stats():
     ids_list = []
@@ -28,7 +30,6 @@ def get_max_stats():
     ids_list_str = ','.join(str(i) for i in ids_list)
     max_stats_req = requests.get(f'https://www.balldontlie.io/api/v1/season_averages?player_ids[]={ids_list_str}')
     max_stats_data = max_stats_req.json()
-    stat_cats = ['pts','reb','ast','stl','blk','turnover']
     max_stats = {key: None for key in stat_cats}
     for key in max_stats:
         cur_max = max_stats_data['data'][0][key]
@@ -37,6 +38,23 @@ def get_max_stats():
                 cur_max = max_stats_data['data'][i][key]
         max_stats[key] = cur_max
     return max_stats
+
+def create_graph(percents):
+    fig = graph_obj.Figure(data=graph_obj.Scatterpolar(
+        r = percents,
+        theta=['Points','Rebounds','Assists', 'Steals','Blocks','Turnovers'],
+        fill='toself'
+    ))
+    fig.update_layout(
+        polar=dict(
+            radialaxis=dict(
+                visible=True
+            ),
+        ),
+        showlegend=False
+    )
+    fig.update_polars(radialaxis_showticklabels=False, radialaxis_showline=False, radialaxis_range=[0, 10])
+    fig.write_image('stats_plot.png')
 
 
 @app.route('/')
@@ -77,8 +95,13 @@ def submit():
             team = player_info['team']['full_name']
             # Extract counting stats from response
             stat_source = player_stats['data'][0]
+            perc_array = []
+            for cat in stat_cats:
+                stat_data = stat_source[cat]
+                stat_perc = round(stat_data/max_stats_dict[cat],2)*100
+                perc_array.append(stat_perc)
+            print(perc_array)
             ppg = stat_source['pts']
-            ppg = ppg/max_stats_dict["pts"]
             rebounds = stat_source['reb']
             assists = stat_source['ast']
             steals = stat_source['stl']
