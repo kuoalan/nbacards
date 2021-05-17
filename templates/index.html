@@ -51,15 +51,13 @@
                                 </ul>
                             </div>
 {#                            <div class="card-content grey lighten-4">#}
-                            <div class="card-content">
+                            <div class="card-content valign center">
                                 <div id="tab1">
                                     <img src="{{ plot_url }}" class="responsive-img">
-                                    <p><b>PTS: </b>{{ points }}</p>
-                                    <p><b>RBS: </b>{{ rebounds }}</p>
-                                    <p><b>AST: </b>{{ assists }}</p>
-                                    <p><b>STL: </b>{{ steals }}</p>
-                                    <p><b>BLK: </b>{{ blocks }}</p>
-                                    <p><b>TOV: </b>{{ turnovers }}</p>
+                                    <p>
+                                        <b>PTS: </b>{{ points }} | <b>RBS: </b>{{ rebounds }} | <b>AST: </b>{{ assists }} |
+                                        <b>STL: </b>{{ steals }} | <b>BLK: </b>{{ blocks }} | <b>TOV: </b>{{ turnovers }}
+                                    </p>
                                 </div>
                                 <div id="tab2">
                                     <p><b>FG: </b>{{ fg_pct }}%</p>
