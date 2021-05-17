@@ -51,7 +51,11 @@ def create_graph(percents, player_id):
                 visible=True
             ),
         ),
-        showlegend=False
+        showlegend=False,
+        font=dict(
+            family="Arial, monospace",
+            size=30,
+        )
     )
     fig.update_polars(radialaxis_showticklabels=False, radialaxis_showline=False, radialaxis_range=[0, 100])
     # if os.path.exists('static/stats_plot.png'):
