@@ -11,7 +11,7 @@ sessions_key = os.environ.get('sessions_key', None)
 yt_api_key = os.environ.get('yt_secret_key', None)
 port = int(os.environ.get("PORT", 5000))
 
-app.secret_key = sessions_key
+app.secret_key = 'test'
 
 with open(player_id_file) as f:
     player_ids = json.load(f)
@@ -53,8 +53,8 @@ def create_graph(percents):
         ),
         showlegend=False
     )
-    fig.update_polars(radialaxis_showticklabels=False, radialaxis_showline=False, radialaxis_range=[0, 10])
-    fig.write_image('stats_plot.png')
+    fig.update_polars(radialaxis_showticklabels=False, radialaxis_showline=False, radialaxis_range=[0, 100])
+    fig.write_image('static/stats_plot.png')
 
 
 @app.route('/')
@@ -98,8 +98,9 @@ def submit():
             perc_array = []
             for cat in stat_cats:
                 stat_data = stat_source[cat]
-                stat_perc = round(stat_data/max_stats_dict[cat],2)*100
+                stat_perc = stat_data/max_stats_dict[cat]*100
                 perc_array.append(stat_perc)
+            create_graph(perc_array)
             print(perc_array)
             ppg = stat_source['pts']
             rebounds = stat_source['reb']
