@@ -39,7 +39,7 @@ def get_max_stats():
         max_stats[key] = cur_max
     return max_stats
 
-def create_graph(percents):
+def create_graph(percents, player_id):
     fig = graph_obj.Figure(data=graph_obj.Scatterpolar(
         r = percents,
         theta=['Points','Rebounds','Assists', 'Steals','Blocks','Turnovers','Points'],
@@ -54,9 +54,9 @@ def create_graph(percents):
         showlegend=False
     )
     fig.update_polars(radialaxis_showticklabels=False, radialaxis_showline=False, radialaxis_range=[0, 100])
-    if os.path.exists('static/stats_plot.png'):
-        os.remove('static/stats_plot.png')
-    fig.write_image('static/stats_plot.png')
+    # if os.path.exists('static/stats_plot.png'):
+    #     os.remove('static/stats_plot.png')
+    fig.write_image(f'static/stats_plot_{player_id}.png')
 
 
 @app.route('/')
@@ -103,7 +103,7 @@ def submit():
                 stat_data = stat_source[cat]
                 stat_perc = stat_data/max_stats_dict[cat]*100
                 perc_array.append(stat_perc)
-            create_graph(perc_array)
+            create_graph(perc_array, bdl_id)
             ppg = stat_source['pts']
             rebounds = stat_source['reb']
             assists = stat_source['ast']
