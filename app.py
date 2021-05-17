@@ -53,7 +53,7 @@ def create_graph(percents, player_id):
         ),
         showlegend=False,
         font=dict(
-            family="Arial, monospace",
+            family="Segoe UI",
             size=30,
         )
     )
