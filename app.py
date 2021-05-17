@@ -21,7 +21,7 @@ for player in player_ids:
     player_names.append(player)
 player_names.sort()
 
-stat_cats = ['pts','reb','ast','stl','blk','turnover', 'fg_pct', 'fg3_pct', 'ft_pct', 'fga', 'fg3a', 'fta']
+stat_cats = ['pts','reb','ast','stl','blk','turnover', 'fg_pct', 'fg3_pct', 'ft_pct', 'fga', 'fg3a', 'fta','fgm','fg3m','ftm']
 
 def get_max_stats():
     ids_list = []
@@ -61,6 +61,35 @@ def create_graph(percents, categories, player_id, graph_type):
     # if os.path.exists('static/stats_plot.png'):
     #     os.remove('static/stats_plot.png')
     fig.write_image(f'static/stats_plot_{player_id}_{graph_type}.png')
+
+def create_shot_graph(attempt_perc,made_perc,player_id):
+    categories = ['FG','3PT', 'FT','FG']
+
+    fig = graph_obj.Figure()
+
+    fig.add_trace(graph_obj.Scatterpolar(
+        r=attempt_perc,
+        theta=categories,
+        fill='toself',
+        name='Attempts',
+        line = dict(color="#bee2f7")
+    ))
+    fig.add_trace(graph_obj.Scatterpolar(
+        r=made_perc,
+        theta=categories,
+        fill='toself',
+        name='Makes',
+        line=dict(color="#78e38a")
+    ))
+
+    fig.update_layout(
+        polar=dict(
+            radialaxis=dict(
+                visible=True
+            )),
+        showlegend=False
+    )
+    fig.write_image(f'static/shot_plot_{player_id}.png')
 
 
 @app.route('/')
@@ -118,6 +147,21 @@ def submit():
                 shooting_perc_array.append(shooting_perc)
             create_graph(shooting_perc_array, ['FG%', '3PT%', 'FT%', 'FGA', '3PTA', 'FTA','FG%'], bdl_id, "shooting")
             shooting_plot_url = f'static/stats_plot_{bdl_id}_shooting.png'
+            # Extract shot attempts and makes from response
+            attempts_array =[]
+            attempts_cats = ['fga','fg3a','fta','fga']
+            for cat in attempts_cats:
+                attempts_data = stat_source[cat]
+                attempts_perc = attempts_data/max_stats_dict[cat] * 100
+                attempts_array.append(attempts_perc)
+            makes_array = []
+            makes_cats = ['fgm','fg3m','ftm','fgm']
+            for cat in makes_cats:
+                makes_data = stat_source[cat]
+                makes_perc = makes_data/max_stats_dict[cat]*100
+                makes_array.append(makes_perc)
+            create_shot_graph(attempts_array,makes_array,bdl_id)
+            shot_graph_url = f'static/shot_plot_{bdl_id}.png'
             ppg = stat_source['pts']
             rebounds = stat_source['reb']
             assists = stat_source['ast']
@@ -146,7 +190,7 @@ def submit():
                                    fg_pct = fg_pct, fg3_pct = fg3_pct, ft_pct = ft_pct, ts = ts,
                                    height_feet = height_feet, height_inches = height_inches,weight = weight, team = team,
                                    show_stats=True, imageurl = imageurl, player_list = player_names, yt_vid_id = yt_vid_id,
-                                   stat_plot_url=stat_plot_url, shooting_plot_url=shooting_plot_url)
+                                   stat_plot_url=stat_plot_url, shooting_plot_url=shooting_plot_url, shot_graph_url=shot_graph_url)
     else:
         error_message = "Data not found!"
         return render_template('index.html', error_message = error_message, player_list = player_names)
