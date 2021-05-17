@@ -42,7 +42,7 @@ def get_max_stats():
 def create_graph(percents):
     fig = graph_obj.Figure(data=graph_obj.Scatterpolar(
         r = percents,
-        theta=['Points','Rebounds','Assists', 'Steals','Blocks','Turnovers'],
+        theta=['Points','Rebounds','Assists', 'Steals','Blocks','Turnovers','Points'],
         fill='toself'
     ))
     fig.update_layout(
@@ -98,7 +98,8 @@ def submit():
             # Extract counting stats from response
             stat_source = player_stats['data'][0]
             perc_array = []
-            for cat in stat_cats:
+            graph_cats = ['pts', 'reb', 'ast', 'stl', 'blk', 'turnover','pts']
+            for cat in graph_cats:
                 stat_data = stat_source[cat]
                 stat_perc = stat_data/max_stats_dict[cat]*100
                 perc_array.append(stat_perc)
