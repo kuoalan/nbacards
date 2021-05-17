@@ -1,6 +1,6 @@
 import os
 import requests
-from flask import Flask, render_template, json, request, session
+from flask import Flask, render_template, json, request, session, url_for
 import plotly.graph_objs as graph_obj
 
 
@@ -101,7 +101,6 @@ def submit():
                 stat_perc = stat_data/max_stats_dict[cat]*100
                 perc_array.append(stat_perc)
             create_graph(perc_array)
-            print(perc_array)
             ppg = stat_source['pts']
             rebounds = stat_source['reb']
             assists = stat_source['ast']
