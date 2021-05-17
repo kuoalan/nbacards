@@ -104,6 +104,7 @@ def submit():
                 stat_perc = stat_data/max_stats_dict[cat]*100
                 perc_array.append(stat_perc)
             create_graph(perc_array, bdl_id)
+            plot_url = f'static/stats_plot_{bdl_id}.png'
             ppg = stat_source['pts']
             rebounds = stat_source['reb']
             assists = stat_source['ast']
@@ -131,7 +132,8 @@ def submit():
                                    assists=assists, steals = steals, blocks = blocks, turnovers = turnovers,
                                    fg_pct = fg_pct, fg3_pct = fg3_pct, ft_pct = ft_pct, ts = ts,
                                    height_feet = height_feet, height_inches = height_inches,weight = weight, team = team,
-                                   show_stats=True, imageurl = imageurl, player_list = player_names, yt_vid_id = yt_vid_id)
+                                   show_stats=True, imageurl = imageurl, player_list = player_names, yt_vid_id = yt_vid_id,
+                                   plot_url=plot_url)
     else:
         error_message = "Data not found!"
         return render_template('index.html', error_message = error_message, player_list = player_names)
