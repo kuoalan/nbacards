@@ -54,6 +54,7 @@ def create_graph(percents):
         showlegend=False
     )
     fig.update_polars(radialaxis_showticklabels=False, radialaxis_showline=False, radialaxis_range=[0, 100])
+    os.remove('static/stats_plot.png')
     fig.write_image('static/stats_plot.png')
 
 
