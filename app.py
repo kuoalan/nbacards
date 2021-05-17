@@ -111,13 +111,13 @@ def submit():
             stat_plot_url = f'static/stats_plot_{bdl_id}_stats.png'
             # Extract shooting %'s from response
             shooting_perc_array = []
-            shooting_graph_cats = ['fg_pct', 'fg3_pct', 'ft_pct', 'fga', 'fg3a', 'fta']
+            shooting_graph_cats = ['fg_pct', 'fg3_pct', 'ft_pct', 'fga', 'fg3a', 'fta','fg_pct']
             for cat in shooting_graph_cats:
                 shooting_data = stat_source[cat]
                 shooting_perc = shooting_data/max_stats_dict[cat] * 100
                 shooting_perc_array.append(shooting_perc)
-            create_graph(shooting_perc_array, ['FG%', '3PT%', 'FT%', 'FG Attempts', '3PT Attempts', 'FT Attempts'], bdl_id, "shooting")
-            shooting_plot_url = f'static/shooting_plot_{bdl_id}_shooting.png'
+            create_graph(shooting_perc_array, ['FG%', '3PT%', 'FT%', 'FGA', '3PTA', 'FTA','FG%'], bdl_id, "shooting")
+            shooting_plot_url = f'static/stats_plot_{bdl_id}_shooting.png'
             ppg = stat_source['pts']
             rebounds = stat_source['reb']
             assists = stat_source['ast']
