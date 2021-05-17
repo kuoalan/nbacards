@@ -21,7 +21,7 @@ for player in player_ids:
     player_names.append(player)
 player_names.sort()
 
-stat_cats = ['pts','reb','ast','stl','blk','turnover']
+stat_cats = ['pts','reb','ast','stl','blk','turnover', 'fg_pct', 'fg3_pct', 'ft_pct', 'fga', 'fg3a', 'fta']
 
 def get_max_stats():
     ids_list = []
@@ -39,10 +39,10 @@ def get_max_stats():
         max_stats[key] = cur_max
     return max_stats
 
-def create_graph(percents, player_id):
+def create_graph(percents, categories, player_id, graph_type):
     fig = graph_obj.Figure(data=graph_obj.Scatterpolar(
         r = percents,
-        theta=['Points','Rebounds','Assists', 'Steals','Blocks','Turnovers','Points'],
+        theta=categories,
         fill='toself'
     ))
     fig.update_layout(
@@ -60,7 +60,7 @@ def create_graph(percents, player_id):
     fig.update_polars(radialaxis_showticklabels=False, radialaxis_showline=False, radialaxis_range=[0, 100])
     # if os.path.exists('static/stats_plot.png'):
     #     os.remove('static/stats_plot.png')
-    fig.write_image(f'static/stats_plot_{player_id}.png')
+    fig.write_image(f'static/stats_plot_{player_id}_{graph_type}.png')
 
 
 @app.route('/')
@@ -101,14 +101,23 @@ def submit():
             team = player_info['team']['full_name']
             # Extract counting stats from response
             stat_source = player_stats['data'][0]
-            perc_array = []
-            graph_cats = ['pts', 'reb', 'ast', 'stl', 'blk', 'turnover','pts']
-            for cat in graph_cats:
+            stat_perc_array = []
+            stat_graph_cats = ['pts', 'reb', 'ast', 'stl', 'blk', 'turnover','pts']
+            for cat in stat_graph_cats:
                 stat_data = stat_source[cat]
                 stat_perc = stat_data/max_stats_dict[cat]*100
-                perc_array.append(stat_perc)
-            create_graph(perc_array, bdl_id)
-            plot_url = f'static/stats_plot_{bdl_id}.png'
+                stat_perc_array.append(stat_perc)
+            create_graph(stat_perc_array, ['Points','Rebounds','Assists', 'Steals','Blocks','Turnovers','Points'], bdl_id, 'stats')
+            stat_plot_url = f'static/stats_plot_{bdl_id}_stats.png'
+            # Extract shooting %'s from response
+            shooting_perc_array = []
+            shooting_graph_cats = ['fg_pct', 'fg3_pct', 'ft_pct', 'fga', 'fg3a', 'fta']
+            for cat in shooting_graph_cats:
+                shooting_data = stat_source[cat]
+                shooting_perc = shooting_data/max_stats_dict[cat] * 100
+                shooting_perc_array.append(shooting_perc)
+            create_graph(shooting_perc_array, ['FG%', '3PT%', 'FT%', 'FG Attempts', '3PT Attempts', 'FT Attempts'], bdl_id, "shooting")
+            shooting_plot_url = f'static/shooting_plot_{bdl_id}_shooting.png'
             ppg = stat_source['pts']
             rebounds = stat_source['reb']
             assists = stat_source['ast']
@@ -137,7 +146,7 @@ def submit():
                                    fg_pct = fg_pct, fg3_pct = fg3_pct, ft_pct = ft_pct, ts = ts,
                                    height_feet = height_feet, height_inches = height_inches,weight = weight, team = team,
                                    show_stats=True, imageurl = imageurl, player_list = player_names, yt_vid_id = yt_vid_id,
-                                   plot_url=plot_url)
+                                   stat_plot_url=stat_plot_url, shooting_plot_url=shooting_plot_url)
     else:
         error_message = "Data not found!"
         return render_template('index.html', error_message = error_message, player_list = player_names)
