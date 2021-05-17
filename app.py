@@ -54,7 +54,7 @@ def create_graph(percents, player_id):
         showlegend=False,
         font=dict(
             family="Segoe UI",
-            size=20,
+            size=28,
         )
     )
     fig.update_polars(radialaxis_showticklabels=False, radialaxis_showline=False, radialaxis_range=[0, 100])
