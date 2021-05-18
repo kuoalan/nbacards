@@ -32,14 +32,16 @@ def get_max_stats():
     max_stats_data = max_stats_req.json()
     max_stats = {key: None for key in stat_cats}
     for key in max_stats:
-        cur_max = max_stats_data['data'][0][key]
+        if key in ['fga','fg3a','fta']:
+            cur_max = max_stats_data['data'][0][key] * max_stats_data['data'][0]['games_played']
+        else:
+            cur_max = max_stats_data['data'][0][key]
         for i in range(1,len(max_stats_data['data'])):
-            if max_stats_data['data'][i][key] > cur_max:
-                cur_max = max_stats_data['data'][i][key]
-                if key in ['fga','fg3a','fta']:
-                    cur_max = cur_max * max_stats_data['data'][i]['games_played']
+            if key in ['fga','fg3a','fta']:
+                cur_max = max(cur_max, max_stats_data['data'][i][key] * max_stats_data['data'][i]['games_played'])
+            else:
+                cur_max = max(cur_max, max_stats_data['data'][i][key])
         max_stats[key] = cur_max
-    print(max_stats)
     return max_stats
 
 def create_graph(percents, categories, player_id, graph_type):
@@ -57,7 +59,7 @@ def create_graph(percents, categories, player_id, graph_type):
         showlegend=False,
         font=dict(
             family="Segoe UI",
-            size=32,
+            size=32
         )
     )
     fig.update_polars(radialaxis_showticklabels=False, radialaxis_showline=False, radialaxis_range=[0, 100])
@@ -90,7 +92,11 @@ def create_shot_graph(attempt_perc,made_perc,player_id):
             radialaxis=dict(
                 visible=True
             )),
-        showlegend=False
+        showlegend=False,
+        font=dict(
+            family="Segoe UI",
+            size=32
+        )
     )
     fig.update_polars(radialaxis_showticklabels=False, radialaxis_showline=False, radialaxis_range=[0, 100])
     fig.write_image(f'static/shot_plot_{player_id}.png')
@@ -157,9 +163,9 @@ def submit():
             shot_cats = {'fga':'fg_pct','fg3a':'fg3_pct','fta':'ft_pct','fga':'fg_pct'}
             for key,value in shot_cats.items():
                 attempts_data = stat_source[key] * stat_source['games_played']
-                attempts_perc = attempts_data/max_stats_dict[cat]*100
+                attempts_perc = attempts_data/max_stats_dict[key]*100
                 attempts_array.append(attempts_perc)
-                makes_perc = stat_source[key] * attempts_perc
+                makes_perc = (stat_source[value] * attempts_perc)
                 makes_array.append(makes_perc)
 
             # attempts_cats = ['fga','fg3a','fta','fga']
