@@ -35,12 +35,36 @@ def get_max_stats():
         if key in ['fga','fg3a','fta']:
             cur_max = max_stats_data['data'][0][key] * max_stats_data['data'][0]['games_played']
         else:
-            cur_max = max_stats_data['data'][0][key]
+            if max_stats_data['data'][0]['games_played'] < 20:
+                cur_max = 0
+            elif key == 'fg_pct':
+                if max_stats_data['data'][0]['fga'] < 1:
+                    cur_max = 0
+            elif key == 'fg3_pct':
+                if max_stats_data['data'][0]['fg3a'] < 1:
+                    cur_max = 0
+            elif key == 'ft_pct':
+                if max_stats_data['data'][0]['fta'] < 1:
+                    cur_max = 0
+            else:
+                cur_max = max_stats_data['data'][0][key]
         for i in range(1,len(max_stats_data['data'])):
             if key in ['fga','fg3a','fta']:
                 cur_max = max(cur_max, max_stats_data['data'][i][key] * max_stats_data['data'][i]['games_played'])
+            elif max_stats_data['data'][i]['games_played'] < 20:
+                pass
+            elif key == 'fg_pct':
+                if max_stats_data['data'][i]['fga'] > 5:
+                    cur_max = max(cur_max, max_stats_data['data'][i][key])
+            elif key == 'fg3_pct':
+                if max_stats_data['data'][i]['fg3a'] > 3:
+                    cur_max = max(cur_max, max_stats_data['data'][i][key])
+            elif key == 'ft_pct':
+                if max_stats_data['data'][i]['fta'] > 3:
+                    cur_max = max(cur_max, max_stats_data['data'][i][key])
             else:
-                cur_max = max(cur_max, max_stats_data['data'][i][key])
+                if max_stats_data['data'][i]['games_played'] > 10:
+                    cur_max = max(cur_max, max_stats_data['data'][i][key])
         max_stats[key] = cur_max
     return max_stats
 
