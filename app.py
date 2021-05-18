@@ -155,10 +155,10 @@ def submit():
                 attempts_perc = attempts_data/max_stats_dict[cat] * 100
                 attempts_array.append(attempts_perc)
             makes_array = []
-            makes_cats = ['fgm','fg3m','ftm','fgm']
+            makes_cats = {'fgm':'fga','fg3m':'fg3a','ftm':'fta','fgm':'fga'}
             for cat in makes_cats:
                 makes_data = stat_source[cat]
-                makes_perc = makes_data/max_stats_dict[cat]*100
+                makes_perc = makes_data/max_stats_dict[makes_cats[cat]]*100
                 makes_array.append(makes_perc)
             create_shot_graph(attempts_array,makes_array,bdl_id)
             shot_graph_url = f'static/shot_plot_{bdl_id}.png'
