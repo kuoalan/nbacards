@@ -39,6 +39,7 @@ def get_max_stats():
                 if key in ['fga','fg3a','fta']:
                     cur_max = cur_max * max_stats_data['data'][i]['games_played']
         max_stats[key] = cur_max
+    print(max_stats)
     return max_stats
 
 def create_graph(percents, categories, player_id, graph_type):
@@ -152,17 +153,26 @@ def submit():
             shooting_plot_url = f'static/stats_plot_{bdl_id}_shooting.png'
             # Extract shot attempts and makes from response
             attempts_array =[]
-            attempts_cats = ['fga','fg3a','fta','fga']
-            for cat in attempts_cats:
-                attempts_data = stat_source[cat] * stat_source['games_played']
-                attempts_perc = attempts_data/max_stats_dict[cat] * 100
-                attempts_array.append(attempts_perc)
             makes_array = []
-            makes_cats = {'fgm':'fga','fg3m':'fg3a','ftm':'fta','fgm':'fga'}
-            for cat in makes_cats:
-                makes_data = stat_source[cat] * stat_source['games_played']
-                makes_perc = makes_data/max_stats_dict[makes_cats[cat]]*100
+            shot_cats = {'fga':'fg_pct','fg3a':'fg3_pct','fta':'ft_pct','fga':'fg_pct'}
+            for key,value in shot_cats:
+                attempts_data = stat_source[key] * stat_source['games_played']
+                attempts_perc = attempts_data/max_stats_dict[cat]*100
+                attempts_array.append(attempts_perc)
+                makes_perc = stat_source[key] * attempts_perc
                 makes_array.append(makes_perc)
+
+            # attempts_cats = ['fga','fg3a','fta','fga']
+            # for cat in attempts_cats:
+            #     attempts_data = stat_source[cat] * stat_source['games_played']
+            #     attempts_perc = attempts_data/max_stats_dict[cat] * 100
+            #     attempts_array.append(attempts_perc)
+            # makes_array = []
+            # makes_cats = {'fgm':'fga','fg3m':'fg3a','ftm':'fta','fgm':'fga'}
+            # for cat in makes_cats:
+            #     makes_data = stat_source[cat] * stat_source['games_played']
+            #     makes_perc = makes_data/max_stats_dict[makes_cats[cat]]*100
+            #     makes_array.append(makes_perc)
             create_shot_graph(attempts_array,makes_array,bdl_id)
             shot_graph_url = f'static/shot_plot_{bdl_id}.png'
             ppg = stat_source['pts']
