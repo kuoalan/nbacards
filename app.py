@@ -37,7 +37,7 @@ def get_max_stats():
             if max_stats_data['data'][i][key] > cur_max:
                 cur_max = max_stats_data['data'][i][key]
                 if key in ['fga','fg3a','fta']:
-                    cur_max = cur_max * max_stats_data[i]['games_played']
+                    cur_max = cur_max * max_stats_data['data'][i]['games_played']
         max_stats[key] = cur_max
     return max_stats
 
