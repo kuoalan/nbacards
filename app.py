@@ -155,7 +155,7 @@ def submit():
             attempts_array =[]
             makes_array = []
             shot_cats = {'fga':'fg_pct','fg3a':'fg3_pct','fta':'ft_pct','fga':'fg_pct'}
-            for key,value in shot_cats:
+            for key,value in shot_cats.items():
                 attempts_data = stat_source[key] * stat_source['games_played']
                 attempts_perc = attempts_data/max_stats_dict[cat]*100
                 attempts_array.append(attempts_perc)
