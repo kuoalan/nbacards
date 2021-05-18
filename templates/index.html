@@ -46,8 +46,8 @@
                         <div class="card">
                             <div class="card-tabs">
                                 <ul class="tabs tabs-fixed-width">
-                                    <li class="tab"><a href="#tab1">Stats</a></li>
-                                    <li class="tab"><a href="#tab2">%</a></li>
+                                    <li class="tab"><a href="#tab1">Basic Stats</a></li>
+                                    <li class="tab"><a href="#tab2">Shooting Stats</a></li>
                                 </ul>
                             </div>
 {#                            <div class="card-content grey lighten-4">#}
@@ -64,13 +64,11 @@
 
                                 </div>
                                 <div id="tab2">
-                                    <p><b>FG: </b>{{ fg_pct }}%</p>
-                                    <p><b>3PT: </b>{{ fg3_pct }}%</p>
-                                    <p><b>FT: </b>{{ ft_pct }}%</p>
-                                    <p><b>TS: </b>{{ ts }}%</p>
+                                    <p><b>FG: </b>{{ fg_pct }}% | <b>3PT: </b>{{ fg3_pct }}% | <b>FT: </b>{{ ft_pct }}% | <b>TS: </b>{{ ts }}%</p>
                                     <img src="{{ shooting_plot_url }}" class="responsive-img">
+                                    <p class="grey-text text-lighten-1"> Shooting percentages and volume vs league leaders</p>
                                     <img src="{{ shot_graph_url }}" class="responsive-img">
-                                    <p class="grey-text text-lighten-1"> Stats vs league leaders</p>
+                                    <p class="grey-text text-lighten-1"> Attempts (blue) and makes (green) by category</p>
                                 </div>
                             </div>
                         </div>
