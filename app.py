@@ -36,6 +36,8 @@ def get_max_stats():
         for i in range(1,len(max_stats_data['data'])):
             if max_stats_data['data'][i][key] > cur_max:
                 cur_max = max_stats_data['data'][i][key]
+                if key in ['fga','fg3a','fta']:
+                    cur_max = cur_max * max_stats_data[i]['games_played']
         max_stats[key] = cur_max
     return max_stats
 
@@ -89,6 +91,7 @@ def create_shot_graph(attempt_perc,made_perc,player_id):
             )),
         showlegend=False
     )
+    fig.update_polars(radialaxis_showticklabels=False, radialaxis_showline=False, radialaxis_range=[0, 100])
     fig.write_image(f'static/shot_plot_{player_id}.png')
 
 
@@ -151,13 +154,13 @@ def submit():
             attempts_array =[]
             attempts_cats = ['fga','fg3a','fta','fga']
             for cat in attempts_cats:
-                attempts_data = stat_source[cat]
+                attempts_data = stat_source[cat] * stat_source['games_played']
                 attempts_perc = attempts_data/max_stats_dict[cat] * 100
                 attempts_array.append(attempts_perc)
             makes_array = []
             makes_cats = {'fgm':'fga','fg3m':'fg3a','ftm':'fta','fgm':'fga'}
             for cat in makes_cats:
-                makes_data = stat_source[cat]
+                makes_data = stat_source[cat] * stat_source['games_played']
                 makes_perc = makes_data/max_stats_dict[makes_cats[cat]]*100
                 makes_array.append(makes_perc)
             create_shot_graph(attempts_array,makes_array,bdl_id)
