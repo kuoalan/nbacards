@@ -3,19 +3,21 @@ import requests
 from flask import Flask, render_template, json, request, session, url_for
 import plotly.graph_objs as graph_obj
 
-
 app = Flask(__name__)
 
+# Locate required file, get secret keys
 player_id_file = os.path.join(app.static_folder, 'player_ids.json')
 sessions_key = os.environ.get('sessions_key', None)
 yt_api_key = os.environ.get('yt_secret_key', None)
 port = int(os.environ.get("PORT", 5000))
 
-app.secret_key = 'test'
+app.secret_key = 'playball'
 
+# Load player ID file
 with open(player_id_file) as f:
     player_ids = json.load(f)
 
+# Set up array of player names
 player_names = []
 for player in player_ids:
     player_names.append(player)
@@ -23,20 +25,30 @@ player_names.sort()
 
 stat_cats = ['pts','reb','ast','stl','blk','turnover', 'fg_pct', 'fg3_pct', 'ft_pct', 'fga', 'fg3a', 'fta','fgm','fg3m','ftm']
 
-def get_max_stats():
+
+def get_max_stats(player_id_list):
+    """
+    Calculates season stat leaders for each counting and shooting percentage stat. Uses
+    :param: player_id_list: A list containing the player ids of each active player.
+    :return: dict: a dictionary containing the highest statistic or percentage for each statistical category for the current season
+    """
     ids_list = []
-    for each_player in player_ids:
-        ids_list.append(player_ids[each_player][1])
+    for each_player in player_id_list:
+        ids_list.append(player_id_list[each_player][1])
     ids_list_str = ','.join(str(i) for i in ids_list)
-    max_stats_req = requests.get(f'https://www.balldontlie.io/api/v1/season_averages?player_ids[]={ids_list_str}')
+    # Currently in offseason, changed to 2020 season stats. Get data from balldontlie API.
+    max_stats_req = requests.get(f'https://www.balldontlie.io/api/v1/season_averages?season=2020&player_ids[]={ids_list_str}')
     max_stats_data = max_stats_req.json()
+    # Set up dictionary to hold max stats
     max_stats = {key: None for key in stat_cats}
     for key in max_stats:
         if key in ['fga','fg3a','fta']:
             cur_max = max_stats_data['data'][0][key] * max_stats_data['data'][0]['games_played']
         else:
+            # Minimum of 20 games played to qualify
             if max_stats_data['data'][0]['games_played'] < 20:
                 cur_max = 0
+            # Minimum of 1 FGA/3PTA/FTA to qualify for each shooting percentage stat
             elif key == 'fg_pct':
                 if max_stats_data['data'][0]['fga'] < 1:
                     cur_max = 0
@@ -68,7 +80,18 @@ def get_max_stats():
         max_stats[key] = cur_max
     return max_stats
 
+
 def create_graph(percents, categories, player_id, graph_type):
+    """
+    Function that creates a radial graph for displaying how the specified player's stats compare to the league leader
+
+    :param percents: list containing percentages for each counting & shooting stat (player stat / league leader stat)
+    :param categories: list containing statistical categories to be included in the graph
+    :param player_id: integer corresponding to the balldontlie player ID
+    :param graph_type: string corresponding to the type of graph (used to name file when saving image)
+
+    :return: No explicit return, saves an image file containing the graph
+    """
     fig = graph_obj.Figure(data=graph_obj.Scatterpolar(
         r = percents,
         theta=categories,
@@ -87,15 +110,22 @@ def create_graph(percents, categories, player_id, graph_type):
         )
     )
     fig.update_polars(radialaxis_showticklabels=False, radialaxis_showline=False, radialaxis_range=[0, 100])
-    # if os.path.exists('static/stats_plot.png'):
-    #     os.remove('static/stats_plot.png')
     fig.write_image(f'static/stats_plot_{player_id}_{graph_type}.png')
 
+
 def create_shot_graph(attempt_perc,made_perc,player_id):
+    """
+    Function that creates a graph showing made shots overlaid on attempted shots
+    :param attempt_perc: list containing attempt percentages for each shooting stat (player attempts / league leader attempts)
+    :param made_perc: list containing make percentages for each shooting stat (player makes / league leader makes)
+    :param player_id: integer corresponding to player's balldontlie ID
+
+    :return: No explicit return, saves image file contaiing the graph
+    """
     categories = ['FG','3PT', 'FT','FG']
 
     fig = graph_obj.Figure()
-
+    # Plot attempts line and fill
     fig.add_trace(graph_obj.Scatterpolar(
         r=attempt_perc,
         theta=categories,
@@ -103,6 +133,7 @@ def create_shot_graph(attempt_perc,made_perc,player_id):
         name='Attempts',
         line = dict(color="#bee2f7")
     ))
+    # Plot makes line and fill
     fig.add_trace(graph_obj.Scatterpolar(
         r=made_perc,
         theta=categories,
@@ -126,12 +157,15 @@ def create_shot_graph(attempt_perc,made_perc,player_id):
     fig.write_image(f'static/shot_plot_{player_id}.png')
 
 
+# Route for initial page load
 @app.route('/')
 def index():
-    session['max_stats'] = get_max_stats()
+    # Save max stats on initial page load and save in session data
+    session['max_stats'] = get_max_stats(player_ids)
     return render_template('index.html', show_stats = False, player_list = player_names)
 
 
+# Route for getting player stats
 @app.route('/', methods=['POST'])
 def submit():
     search_target = request.form['player_name']
@@ -141,7 +175,7 @@ def submit():
             bdl_id = player_ids[player][1]
             player_info_req = requests.get(f'https://www.balldontlie.io/api/v1/players/{bdl_id}')
             player_stats_req = requests.get(
-                f'https://www.balldontlie.io/api/v1/season_averages?player_ids[]={bdl_id}')
+                f'https://www.balldontlie.io/api/v1/season_averages?season=2020&player_ids[]={bdl_id}')
             player_stats = player_stats_req.json()
             player_info = player_info_req.json()
             if len(player_stats['data']) == 0:
@@ -194,18 +228,6 @@ def submit():
                 attempts_array.append(attempts_perc)
                 makes_perc = (stat_source[value] * attempts_perc)
                 makes_array.append(makes_perc)
-
-            # attempts_cats = ['fga','fg3a','fta','fga']
-            # for cat in attempts_cats:
-            #     attempts_data = stat_source[cat] * stat_source['games_played']
-            #     attempts_perc = attempts_data/max_stats_dict[cat] * 100
-            #     attempts_array.append(attempts_perc)
-            # makes_array = []
-            # makes_cats = {'fgm':'fga','fg3m':'fg3a','ftm':'fta','fgm':'fga'}
-            # for cat in makes_cats:
-            #     makes_data = stat_source[cat] * stat_source['games_played']
-            #     makes_perc = makes_data/max_stats_dict[makes_cats[cat]]*100
-            #     makes_array.append(makes_perc)
             create_shot_graph(attempts_array,makes_array,bdl_id)
             shot_graph_url = f'static/shot_plot_{bdl_id}.png'
             ppg = stat_source['pts']
