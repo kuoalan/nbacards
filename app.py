@@ -170,10 +170,13 @@ def index():
 def submit():
     search_target = request.form['player_name']
     max_stats_dict = session['max_stats']
+    # Search through players for matching name (case insensitive)
     for player in player_ids:
         if search_target.lower() in player.lower():
             bdl_id = player_ids[player][1]
+            # Get player data (height, weight, position, etc)
             player_info_req = requests.get(f'https://www.balldontlie.io/api/v1/players/{bdl_id}')
+            # Get season statistics (set to 2020 season because it is currently the offseason)
             player_stats_req = requests.get(
                 f'https://www.balldontlie.io/api/v1/season_averages?season=2020&player_ids[]={bdl_id}')
             player_stats = player_stats_req.json()
@@ -222,14 +225,17 @@ def submit():
             attempts_array =[]
             makes_array = []
             shot_cats = {'fga':'fg_pct','fg3a':'fg3_pct','fta':'ft_pct','fga':'fg_pct'}
+            # Get percentage (player stat / league leader stat) for each shooting category
             for key,value in shot_cats.items():
                 attempts_data = stat_source[key] * stat_source['games_played']
                 attempts_perc = attempts_data/max_stats_dict[key]*100
                 attempts_array.append(attempts_perc)
                 makes_perc = (stat_source[value] * attempts_perc)
                 makes_array.append(makes_perc)
+            # Create graph of makes & attempts
             create_shot_graph(attempts_array,makes_array,bdl_id)
             shot_graph_url = f'static/shot_plot_{bdl_id}.png'
+            # Get counting stats
             ppg = stat_source['pts']
             rebounds = stat_source['reb']
             assists = stat_source['ast']
