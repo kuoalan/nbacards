@@ -2,7 +2,7 @@
 Flask web application allowing users to get current season stats and highlight videos for any current NBA player. Also shows how each player compares statistically to league leaders in graph form.
 
 <p float="left">
-  <img src="https://github.com/kuoalan/nbacards/blob/master/screenshots/screenshot_1.gif" width="300">
+  <img src="https://github.com/kuoalan/nbacards/blob/master/screenshots/screenshot_1.gif" width="400">
 </p>
 
 ## On Heroku:
