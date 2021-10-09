@@ -9,9 +9,8 @@ app = Flask(__name__)
 player_id_file = os.path.join(app.static_folder, 'player_ids.json')
 sessions_key = os.environ.get('sessions_key', None)
 yt_api_key = os.environ.get('yt_secret_key', None)
-port = int(os.environ.get("PORT", 5000))
-
-app.secret_key = 'playball'
+port = int(os.environ.get('PORT', 5000))
+app.secret_key = os.environ.get('secret_key', None)
 
 # Load player ID file
 with open(player_id_file) as f:
